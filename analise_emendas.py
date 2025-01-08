@@ -125,14 +125,13 @@ def plot_party_analysis(df, suffix=''):
     ax3.yaxis.set_major_formatter(plt.FuncFormatter(format_millions))
     
     plt.tight_layout()
-    plt.savefig(f'analise_partidos{suffix}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'plots/analise_partidos{suffix}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def plot_spectrum_analysis(df, suffix=''):
     def format_billions(x, pos):
         return f'R${x/1e9:.1f}B'
     
-    # Apenas os espectros têm cores fixas
     spectrum_colors = {
         'esquerda': '#FF0000',  # Vermelho
         'centro': '#808080',    # Cinza
@@ -155,7 +154,7 @@ def plot_spectrum_analysis(df, suffix=''):
     ax2.set_title('Distribuição do Valor Empenhado por Espectro Político')
     
     plt.tight_layout()
-    plt.savefig(f'analise_espectro{suffix}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'plots/analise_espectro{suffix}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def display_summary(df):
