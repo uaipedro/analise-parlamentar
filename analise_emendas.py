@@ -5,7 +5,6 @@ import unicodedata
 
 def setup_visualization():
     plt.style.use('seaborn-v0_8-darkgrid')
-    sns.set_palette("husl")
     pd.set_option('display.max_columns', None)
 
 def load_dataframes():
@@ -13,11 +12,13 @@ def load_dataframes():
         amendments = pd.read_csv('data/emendas.csv', encoding='latin1', sep=';', low_memory=False)
         deputies = pd.read_csv('data/deputados_atuais.csv', encoding='utf-8', sep=';')
         
-        
+      
         amendments['Valor Empenhado'] = amendments['Valor Empenhado'].str.replace('R$', '')\
             .str.replace('.', '')\
             .str.replace(',', '.')\
             .astype(float)
+        
+        amendments['Ano'] = amendments['Ano da Emenda']
             
         return amendments, deputies
         
@@ -51,15 +52,28 @@ def merge_dataframes(amendments, deputies):
     print("Emendas:", amendments_clean[['Nome do Autor da Emenda', 'nome_normalizado']].head())
     print("Deputados:", deputies_clean[['Nome Parlamentar', 'nome_normalizado']].head())
     
+    try:
+        political_spectrum = pd.read_csv('data/partidos2024.csv', sep=';')
+    except FileNotFoundError:
+        political_spectrum = pd.read_csv('data/partidos2020.csv')
+    
     merged_df = amendments_clean.merge(
         deputies_clean[['nome_normalizado', 'Partido']],
         on='nome_normalizado',
         how='left'
     ).drop('nome_normalizado', axis=1)
     
+    merged_df = merged_df.merge(
+        political_spectrum[['SG_PARTIDO', 'Espectro']],
+        left_on='Partido',
+        right_on='SG_PARTIDO',
+        how='left'
+    ).drop('SG_PARTIDO', axis=1)
+    
     print(f"\nLinhas antes do merge: {len(amendments)}")
     print(f"Linhas após o merge: {len(merged_df)}")
     print(f"Registros sem partido: {merged_df['Partido'].isna().sum()}")
+    print(f"Registros sem espectro político: {merged_df['Espectro'].isna().sum()}")
     
     return merged_df
 
@@ -67,19 +81,18 @@ def format_currency(value):
     return f"R$ {value:,.2f}".replace(',', '_').replace('.', ',').replace('_', '.')
 
 def generate_party_summary(df):
-    summary = df.groupby('Partido').agg({
+    summary = df.groupby(['Partido', 'Espectro']).agg({
         'Valor Empenhado': ['sum', 'count', 'mean']
     })
     
     summary.columns = ['Total Empenhado', 'Quantidade de Emendas', 'Média por Emenda']
     summary = summary.sort_values('Total Empenhado', ascending=False)
     
-    
     summary['Total Empenhado'] = summary['Total Empenhado'].apply(format_currency)
     summary['Média por Emenda'] = summary['Média por Emenda'].apply(format_currency)
     return summary
 
-def plot_party_analysis(df):
+def plot_party_analysis(df, suffix=''):
     def format_billions(x, pos):
         return f'R${x/1e9:.1f}B'
     
@@ -91,14 +104,17 @@ def plot_party_analysis(df):
     # Gráfico de barras - Total por partido
     ax1 = plt.subplot(2, 2, 1)
     party_totals = df.groupby('Partido')['Valor Empenhado'].sum().sort_values(ascending=True)
-    bars = party_totals.plot(kind='barh')
+    ax1.barh(range(len(party_totals)), party_totals.values)
+    ax1.set_yticks(range(len(party_totals)))
+    ax1.set_yticklabels(party_totals.index)
     ax1.xaxis.set_major_formatter(plt.FuncFormatter(format_billions))
     plt.title('Valor Total Empenhado por Partido')
     
-    # Gráfico de pizza - Distribuição
+    # Gráfico de pizza - Distribuição por valor
     ax2 = plt.subplot(2, 2, 2)
-    df['Partido'].value_counts().plot(kind='pie', autopct='%1.1f%%')
-    plt.title('Distribuição de Emendas por Partido')
+    valor_por_partido = df.groupby('Partido')['Valor Empenhado'].sum()
+    ax2.pie(valor_por_partido.values, labels=valor_por_partido.index, autopct='%1.1f%%')
+    plt.title('Distribuição do Valor Empenhado por Partido')
     
     # Boxplot com escala logarítmica
     ax3 = plt.subplot(2, 1, 2)
@@ -109,24 +125,63 @@ def plot_party_analysis(df):
     ax3.yaxis.set_major_formatter(plt.FuncFormatter(format_millions))
     
     plt.tight_layout()
-    plt.savefig('analise_partidos.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'analise_partidos{suffix}.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+def plot_spectrum_analysis(df, suffix=''):
+    def format_billions(x, pos):
+        return f'R${x/1e9:.1f}B'
+    
+    # Apenas os espectros têm cores fixas
+    spectrum_colors = {
+        'esquerda': '#FF0000',  # Vermelho
+        'centro': '#808080',    # Cinza
+        'direita': '#0000FF'    # Azul
+    }
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # Filtra apenas os dados com espectro definido
+    df_spectrum = df[df['Espectro'].notna()]
+    
+    spectrum_totals = df_spectrum.groupby('Espectro')['Valor Empenhado'].sum().sort_values(ascending=True)
+    spectrum_totals.plot(kind='barh', ax=ax1, color=[spectrum_colors[s] for s in spectrum_totals.index])
+    ax1.xaxis.set_major_formatter(plt.FuncFormatter(format_billions))
+    ax1.set_title('Valor Total Empenhado por Espectro Político')
+    
+    valor_por_espectro = df_spectrum.groupby('Espectro')['Valor Empenhado'].sum()
+    valor_por_espectro.plot(kind='pie', autopct='%1.1f%%', ax=ax2, 
+                           colors=[spectrum_colors[s] for s in valor_por_espectro.index])
+    ax2.set_title('Distribuição do Valor Empenhado por Espectro Político')
+    
+    plt.tight_layout()
+    plt.savefig(f'analise_espectro{suffix}.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def display_summary(df):
-    print("\n=== RESUMO DA ANÁLISE ===")
-    print(f"\nTotal de emendas: {len(df):,}")
-    print(f"\nTotal de deputados únicos: {df['Nome do Autor da Emenda'].nunique():,}")
+    print("\n=== RESUMO DA ANÁLISE GERAL ===")
+    anos = sorted(df['Ano'].unique())
     
-    valor_total = format_currency(df['Valor Empenhado'].sum())
-    valor_medio = format_currency(df['Valor Empenhado'].mean())
-    
-    print(f"\nValor total empenhado: {valor_total}")
-    print(f"Valor médio por emenda: {valor_medio}")
-    
-    print(f"\nDistribuição por partido:")
-    print(generate_party_summary(df))
-    
-    plot_party_analysis(df)
+    for ano in anos:
+        if ano < 2020:
+            continue
+            
+        df_ano = df[df['Ano'] == ano]
+        print(f"\n\n=== ANÁLISE DO ANO {ano} ===")
+        print(f"Total de emendas: {len(df_ano):,}")
+        print(f"Total de deputados únicos: {df_ano['Nome do Autor da Emenda'].nunique():,}")
+        
+        valor_total = format_currency(df_ano['Valor Empenhado'].sum())
+        valor_medio = format_currency(df_ano['Valor Empenhado'].mean())
+        
+        print(f"\nValor total empenhado: {valor_total}")
+        print(f"Valor médio por emenda: {valor_medio}")
+        
+        print(f"\nDistribuição por partido e espectro político:")
+        print(generate_party_summary(df_ano))
+        
+        plot_party_analysis(df_ano, suffix=f"_{ano}")
+        plot_spectrum_analysis(df_ano, suffix=f"_{ano}")
 
 def main():
     setup_visualization()
