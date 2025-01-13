@@ -28,7 +28,6 @@ ENV/
 .venv/
 env.bak/
 venv.bak/
-
 # IDEs e editores
 .idea/
 .vscode/
@@ -38,7 +37,7 @@ venv.bak/
 .project
 .pydevproject
 .settings/
-
+.cursor/
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb

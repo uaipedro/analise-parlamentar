@@ -1,0 +1,21 @@
+# Configuração mais rigorosa do styler
+style_transformers(
+    initialize = function(pd_flat) {
+        pd_flat$line_length <- 80 # Força limite de 80 caracteres
+        pd_flat
+    },
+    indention = function(pd_flat) {
+        pd_flat <- styler::indent_braces(pd_flat, indent_by = 4) # Força indentação de 4 espaços
+        pd_flat <- styler::indent_op(pd_flat, indent_by = 4)
+        pd_flat <- styler::indent_eq_sub(pd_flat, indent_by = 4)
+        pd_flat
+    },
+    line_break = function(pd_flat) {
+        pd_flat <- styler::set_line_break_after_op(pd_flat, 80)
+        pd_flat <- styler::set_line_break_before_curly_opening(pd_flat)
+        pd_flat <- break_line_at_length(pd_flat, 80) # Força quebra em 80 caracteres
+        pd_flat
+    },
+    space = tidyverse_style()$space,
+    token = tidyverse_style()$token
+)
