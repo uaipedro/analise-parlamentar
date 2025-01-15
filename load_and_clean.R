@@ -148,3 +148,61 @@ matches_df <- matches_df |>
 
 
 View(matches_df)
+
+
+parlamentares_info <- parlamentares_combined |>
+  select(
+    nome_sanitized,
+    nome_civil,
+    partido,
+    tipo
+  ) |>
+  distinct()
+
+amendments <- amendments |>
+  left_join(
+    matches_df |> 
+    select(nome_emenda, match_parlamentar),
+    by = c("autor_sanitized" = "nome_emenda")
+  ) |>
+  left_join(
+    parlamentares_info,
+    by = c("match_parlamentar" = "nome_sanitized")
+  )
+
+# Verificar o resultado
+glimpse(amendments)
+View(amendments)
+
+if (!dir.exists("data/processed")) {
+  dir.create("data/processed")
+}
+write.csv2(amendments, "data/processed/emendas_2023_2024_clean.csv", row.names = FALSE)
+
+# Criar DataFrame combinado de todos os parlamentares
+todos_parlamentares <- bind_rows(
+  deputies |>
+    select(
+      nome = nome_parlamentar,
+      nome_sanitizado = nome_sanitized,
+      partido,
+      uf
+    ) |>
+    mutate(tipo = "deputado"),
+  
+  senators |>
+    select(
+      nome = nome_parlamentar,
+      nome_sanitizado = nome_sanitized,
+      partido,
+      uf
+    ) |>
+    mutate(tipo = "senador")
+) |>
+  mutate(
+    nome = str_to_title(nome)
+  ) |>
+  distinct() # Remove possíveis duplicatas
+
+# Salvar o DataFrame combinado
+write.csv2(todos_parlamentares, "data/processed/parlamentares.csv", row.names = FALSE)
