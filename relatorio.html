@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Pedro Mambelli">
+<meta name="dcterms.date" content="2025-01-17">
+
+<title>Análise Exploratória de Dados de Emendas Parlamentares em 2024</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="relatorio_files/libs/clipboard/clipboard.min.js"></script>
+<script src="relatorio_files/libs/quarto-html/quarto.js"></script>
+<script src="relatorio_files/libs/quarto-html/popper.min.js"></script>
+<script src="relatorio_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="relatorio_files/libs/quarto-html/anchor.min.js"></script>
+<link href="relatorio_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="relatorio_files/libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="relatorio_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="relatorio_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="relatorio_files/libs/bootstrap/bootstrap-8a79a254b8e706d3c925cde0a310d4f0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="relatorio_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="relatorio_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="relatorio_files/libs/d3-bundle-5.16.0/d3-bundle.min.js"></script>
+
+<script src="relatorio_files/libs/d3-lasso-0.0.5/d3-lasso.min.js"></script>
+
+<script src="relatorio_files/libs/save-svg-as-png-1.4.17/save-svg-as-png.min.js"></script>
+
+<script src="relatorio_files/libs/flatbush-4.4.0/flatbush.min.js"></script>
+
+<link href="relatorio_files/libs/ggiraphjs-0.8.10/ggiraphjs.min.css" rel="stylesheet">
+
+<script src="relatorio_files/libs/ggiraphjs-0.8.10/ggiraphjs.min.js"></script>
+
+<script src="relatorio_files/libs/girafe-binding-0.8.12/girafe.js"></script>
+
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análise Exploratória de Dados de Emendas Parlamentares em 2024</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pedro Mambelli </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 17, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introdução" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="introdução">1. Introdução</h2>
+<section id="descrição-geral" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="descrição-geral">1.1 Descrição Geral</h3>
+<p>Todo ano, deputados e senadores têm a oportunidade de direcionar parte do orçamento federal para projetos de sua escolha através das emendas parlamentares. Desde 2015, com a Emenda Constitucional 86, o governo é obrigado a executar essas emendas individuais até 1,2% da Receita Corrente Líquida, com metade desse valor indo necessariamente para a saúde.</p>
+<p>Mas como esse dinheiro é distribuído na prática? Este estudo analisa as emendas individuais de 2024 para entender como diferentes partidos e grupos políticos escolhem investir esses recursos. Focamos apenas nas emendas individuais (deixando de lado as de bancada e comissões) para ter uma visão mais clara das prioridades de cada parlamentar.</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p><a href="https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc86.htm">Emenda Constitucional nº 86/2015</a>.</p>
+</div></div></section>
+</section>
+<section id="descrição-dos-dados" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="descrição-dos-dados">2. Descrição dos Dados</h2>
+<section id="fontes-dos-dados" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="fontes-dos-dados">2.1 Fontes dos Dados</h3>
+<ol type="1">
+<li><strong>Portal da Transparência do Governo Federal</strong>
+<ul>
+<li>Compilação de dados sobre emendas parlamentares individuais para 2024</li>
+<li>Dados obtidos periodicamente por meio dos ministérios e órgãos do Poder Executivo Federal</li>
+</ul></li>
+<li><strong>Portais Legislativos (Câmara e Senado)</strong>
+<ul>
+<li>Dados cadastrais dos parlamentares em exercício de 2023 a 2027</li>
+<li>Informações oficiais sobre deputados federais e senadores</li>
+</ul></li>
+<li><strong>Valor Econômico (2024)</strong>
+<ul>
+<li>Classificação ideológica autodeclarada dos partidos políticos em 2024</li>
+<li>Baseado em reportagem sobre auto-declaração ideológica das siglas partidárias</li>
+</ul></li>
+</ol>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Fontes: - <a href="https://portaldatransparencia.gov.br">Portal da Transparência</a> - <a href="https://www.camara.leg.br/internet/deputado/deputado.xls">Câmara dos Deputados</a> - <a href="https://www25.senado.leg.br/web/transparencia/sen/em-exercicio/-/e/por-nome">Senado Federal</a> - <a href="https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml">Valor Econômico</a></p>
+</div></div></section>
+<section id="estrutura-dos-dados" class="level3">
+<h3 class="anchored" data-anchor-id="estrutura-dos-dados">2.2 Estrutura dos Dados</h3>
+<ul>
+<li><strong>Tabela de Emendas:</strong>
+<ul>
+<li>Total de 17 colunas originais, incluindo detalhes orçamentários e administrativos (ex: <code>Numero_Emenda</code>, <code>Plano_Orcamentario</code>, <code>Valor_Restos_Pagar_Inscritos</code>)</li>
+<li>Colunas utilizadas na análise: <code>Ano</code>, <code>Autor_Emenda</code>, <code>Funcao</code>, <code>Valor_Empenhado</code></li>
+</ul></li>
+<li><strong>Tabela de Deputados:</strong>
+<ul>
+<li>Total de 9 colunas originais, incluindo informações administrativas (ex: <code>Endereco</code>, <code>Gabinete</code>, <code>Telefone</code>)</li>
+<li>Colunas utilizadas na análise: <code>Nome_Parlamentar</code>, <code>Partido</code>, <code>UF</code></li>
+</ul></li>
+<li><strong>Tabela de Senadores:</strong>
+<ul>
+<li>Total de 10 colunas originais, incluindo dados pessoais e de contato (ex: <code>Data_Nascimento</code>, <code>Chefe_Gabinete</code>)</li>
+<li>Colunas utilizadas na análise: <code>Nome_Parlamentar</code>, <code>Partido</code>, <code>UF</code></li>
+</ul></li>
+<li><strong>Tabela de Espectros Ideológicos:</strong>
+<ul>
+<li>Duas colunas: <code>partido</code> e <code>espectro_ideologico</code></li>
+<li>Ambas utilizadas na análise</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="perguntas-de-pesquisa" class="level2">
+<h2 class="anchored" data-anchor-id="perguntas-de-pesquisa">3. Perguntas de Pesquisa</h2>
+<p><strong>1. Qual é a composição partidária dos parlamentares (deputados e senadores) em atividade no ano de 2024?</strong></p>
+<p>Na Figura 1, foi apresentado um gráfico de barras que ilustra a distribuição dos parlamentares por partido político, permitindo visualizar quais partidos têm maior representatividade entre os parlamentares em atividade.</p>
+<p><strong>2. Qual foi o montante total distribuído por cada partido por meio de emendas parlamentares individuais em 2024?</strong></p>
+<p>No gráfico de barras da Figura 2, foi feita uma visualização interativa que permite explorar o valor total das emendas por partido, possibilitando comparações diretas entre as diferentes legendas.</p>
+<p><strong>3. Como se distribuem os valores das emendas parlamentares individuais em 2024, considerando suas medidas de tendência central (média e mediana) e dispersão (desvio padrão)?</strong></p>
+<p>Na Figura 3 e Tabela 2, foi apresentado um histograma da distribuição dos valores e uma tabela com as principais estatísticas descritivas, permitindo compreender o padrão de distribuição dos recursos.</p>
+<p><strong>4. Como os parlamentares distribuiram o orçamento por meio das emendas individuais para diferentes funções (áreas de aplicação)?</strong></p>
+<p>Na Figura 4, foi utilizado um treemap para visualizar a proporção de recursos destinados a cada área de aplicação, destacando as áreas que receberam maior volume de recursos.</p>
+<p><strong>5. Qual é o espectro político dos partidos com parlamentares em atividade no ano de 2024?</strong></p>
+<p>Na Tabela 3, foi apresentada a classificação ideológica de cada partido político, baseada em autodeclarações das legendas, complementada pela Tabela 4 que mostra a distribuição quantitativa de parlamentares em cada espectro ideológico.</p>
+<p><strong>6. Nas áreas de aplicação mais frequentes (com exceção à saúde), como cada espectro ideológico distribuiu os recursos em diferentes áreas de aplicação?</strong></p>
+<p>Na Figura 5, foi utilizado um gráfico radar para comparar como cada espectro ideológico distribui seus recursos entre as diferentes áreas de aplicação, permitindo identificar padrões e preferências específicas de cada grupo.</p>
+</section>
+<section id="resultados-preliminares" class="level2">
+<h2 class="anchored" data-anchor-id="resultados-preliminares">4. Resultados Preliminares</h2>
+<section id="composição-partidária-dos-parlamentares-em-2024" class="level3">
+<h3 class="anchored" data-anchor-id="composição-partidária-dos-parlamentares-em-2024">Composição Partidária dos Parlamentares em 2024</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/party_distribution.png" class="img-fluid figure-img"></p>
+<figcaption>Figura 1: Distribuição dos parlamentares por partido político em 2024</figcaption>
+</figure>
+</div>
+</section>
+<section id="distribuição-total-de-emendas-parlamentares-por-partido-em-2024" class="level3">
+<h3 class="anchored" data-anchor-id="distribuição-total-de-emendas-parlamentares-por-partido-em-2024">Distribuição Total de Emendas Parlamentares por Partido em 2024</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="girafe html-widget html-fill-item" id="htmlwidget-bc8e471bfc24081d7c62" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-bc8e471bfc24081d7c62">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='ggiraph-svg' role='graphics-document' id='svg_15528246_5db1_4821_9656_9e8a7f684957' viewBox='0 0 720 432'>\n <defs id='svg_15528246_5db1_4821_9656_9e8a7f684957_defs'>\n  <clipPath id='svg_15528246_5db1_4821_9656_9e8a7f684957_c1'>\n   <rect x='0' y='0' width='720' height='432'/>\n  <\/clipPath>\n  <clipPath id='svg_15528246_5db1_4821_9656_9e8a7f684957_c2'>\n   <rect x='45.38' y='39.6' width='588.51' height='312.12'/>\n  <\/clipPath>\n <\/defs>\n <g id='svg_15528246_5db1_4821_9656_9e8a7f684957_rootg' class='ggiraph-svg-rootg'>\n  <g clip-path='url(#svg_15528246_5db1_4821_9656_9e8a7f684957_c1)'>\n   <rect x='0' y='0' width='720' height='432' fill='#FFFFFF' fill-opacity='1' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round' class='ggiraph-svg-bg'/>\n   <rect x='0' y='0' width='720' height='432' fill='#FFFFFF' fill-opacity='1' stroke='none'/>\n  <\/g>\n  <g clip-path='url(#svg_15528246_5db1_4821_9656_9e8a7f684957_c2)'>\n   <rect x='45.38' y='39.6' width='588.51' height='312.12' fill='#FFFFFF' fill-opacity='1' stroke='none'/>\n   <polyline points='45.38,351.72 633.89,351.72' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='45.38,241.56 633.89,241.56' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='45.38,131.39 633.89,131.39' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e1' x='49.35' y='54.46' width='23.86' height='297.26' fill='#659DCD' fill-opacity='1' stroke='none' title='Valor total: R$ 1349.2 mi&amp;lt;br&amp;gt;Parlamentares: 76&amp;lt;br&amp;gt;Média por parlamentar: R$ 17.8 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 41.9%&amp;lt;br&amp;gt;Encargos especiais 11.8%&amp;lt;br&amp;gt;Educação 10.7%&amp;lt;br&amp;gt;Cultura 5.7%&amp;lt;br&amp;gt;Direitos da cidadania 5.0%' data-id='PT'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e2' x='75.86' y='59.91' width='23.86' height='291.82' fill='#90B7DB' fill-opacity='1' stroke='none' title='Valor total: R$ 1324.5 mi&amp;lt;br&amp;gt;Parlamentares: 107&amp;lt;br&amp;gt;Média por parlamentar: R$ 12.4 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 43.8%&amp;lt;br&amp;gt;Encargos especiais 16.0%&amp;lt;br&amp;gt;Assistência social 7.1%&amp;lt;br&amp;gt;Defesa nacional 6.3%&amp;lt;br&amp;gt;Desporto e lazer 6.1%' data-id='PL'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e3' x='102.37' y='216.65' width='23.86' height='135.07' fill='#A7C7E3' fill-opacity='1' stroke='none' title='Valor total: R$ 613.1 mi&amp;lt;br&amp;gt;Parlamentares: 66&amp;lt;br&amp;gt;Média por parlamentar: R$ 9.3 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 48.5%&amp;lt;br&amp;gt;Encargos especiais 14.8%&amp;lt;br&amp;gt;Assistência social 10.6%&amp;lt;br&amp;gt;Urbanismo 5.6%&amp;lt;br&amp;gt;Educação 5.2%' data-id='UNIÃO'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e4' x='128.88' y='226.72' width='23.86' height='125.01' fill='#93BADD' fill-opacity='1' stroke='none' title='Valor total: R$ 567.4 mi&amp;lt;br&amp;gt;Parlamentares: 48&amp;lt;br&amp;gt;Média por parlamentar: R$ 11.8 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 48.3%&amp;lt;br&amp;gt;Encargos especiais 16.7%&amp;lt;br&amp;gt;Desporto e lazer 7.1%&amp;lt;br&amp;gt;Assistência social 5.0%&amp;lt;br&amp;gt;Direitos da cidadania 3.9%' data-id='REPUBLICANOS'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e5' x='155.39' y='233.36' width='23.86' height='118.36' fill='#A5C5E3' fill-opacity='1' stroke='none' title='Valor total: R$ 537.2 mi&amp;lt;br&amp;gt;Parlamentares: 56&amp;lt;br&amp;gt;Média por parlamentar: R$ 9.6 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 47.8%&amp;lt;br&amp;gt;Encargos especiais 16.3%&amp;lt;br&amp;gt;Assistência social 6.3%&amp;lt;br&amp;gt;Educação 6.1%&amp;lt;br&amp;gt;Desporto e lazer 5.3%' data-id='PP'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e6' x='181.9' y='244.64' width='23.86' height='107.08' fill='#AFCCE7' fill-opacity='1' stroke='none' title='Valor total: R$ 486.0 mi&amp;lt;br&amp;gt;Parlamentares: 59&amp;lt;br&amp;gt;Média por parlamentar: R$ 8.2 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 39.4%&amp;lt;br&amp;gt;Encargos especiais 20.8%&amp;lt;br&amp;gt;Assistência social 8.5%&amp;lt;br&amp;gt;Desporto e lazer 6.6%&amp;lt;br&amp;gt;Educação 6.0%' data-id='PSD'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e7' x='208.41' y='256.14' width='23.86' height='95.58' fill='#B2CEE8' fill-opacity='1' stroke='none' title='Valor total: R$ 433.8 mi&amp;lt;br&amp;gt;Parlamentares: 55&amp;lt;br&amp;gt;Média por parlamentar: R$ 7.9 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 53.2%&amp;lt;br&amp;gt;Encargos especiais 10.4%&amp;lt;br&amp;gt;Assistência social 8.4%&amp;lt;br&amp;gt;Educação 6.7%&amp;lt;br&amp;gt;Urbanismo 5.1%' data-id='MDB'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e8' x='234.92' y='275.47' width='23.86' height='76.26' fill='#2171B5' fill-opacity='1' stroke='none' title='Valor total: R$ 346.1 mi&amp;lt;br&amp;gt;Parlamentares: 13&amp;lt;br&amp;gt;Média por parlamentar: R$ 26.6 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 40.4%&amp;lt;br&amp;gt;Educação 25.7%&amp;lt;br&amp;gt;Direitos da cidadania 11.2%&amp;lt;br&amp;gt;Cultura 8.6%&amp;lt;br&amp;gt;Assistência social 3.4%' data-id='PSOL'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e9' x='261.43' y='284.97' width='23.86' height='66.75' fill='#7FADD6' fill-opacity='1' stroke='none' title='Valor total: R$ 303.0 mi&amp;lt;br&amp;gt;Parlamentares: 21&amp;lt;br&amp;gt;Média por parlamentar: R$ 14.4 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 40.0%&amp;lt;br&amp;gt;Encargos especiais 22.6%&amp;lt;br&amp;gt;Urbanismo 7.0%&amp;lt;br&amp;gt;Desporto e lazer 6.9%&amp;lt;br&amp;gt;Educação 6.6%' data-id='PDT'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e10' x='287.94' y='297.17' width='23.86' height='54.55' fill='#85B1D7' fill-opacity='1' stroke='none' title='Valor total: R$ 247.6 mi&amp;lt;br&amp;gt;Parlamentares: 18&amp;lt;br&amp;gt;Média por parlamentar: R$ 13.8 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 51.0%&amp;lt;br&amp;gt;Assistência social 10.2%&amp;lt;br&amp;gt;Educação 6.0%&amp;lt;br&amp;gt;Encargos especiais 5.5%&amp;lt;br&amp;gt;Direitos da cidadania 4.4%' data-id='PSB'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e11' x='314.45' y='319.94' width='23.86' height='31.78' fill='#9FC2E1' fill-opacity='1' stroke='none' title='Valor total: R$ 144.2 mi&amp;lt;br&amp;gt;Parlamentares: 14&amp;lt;br&amp;gt;Média por parlamentar: R$ 10.3 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 37.6%&amp;lt;br&amp;gt;Encargos especiais 18.8%&amp;lt;br&amp;gt;Assistência social 14.2%&amp;lt;br&amp;gt;Desporto e lazer 8.5%&amp;lt;br&amp;gt;Urbanismo 5.3%' data-id='PODE'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e12' x='340.96' y='321.64' width='23.86' height='30.08' fill='#6BA0CE' fill-opacity='1' stroke='none' title='Valor total: R$ 136.5 mi&amp;lt;br&amp;gt;Parlamentares: 8&amp;lt;br&amp;gt;Média por parlamentar: R$ 17.1 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 38.1%&amp;lt;br&amp;gt;Encargos especiais 21.6%&amp;lt;br&amp;gt;Educação 10.0%&amp;lt;br&amp;gt;Cultura 9.1%&amp;lt;br&amp;gt;Direitos da cidadania 7.1%' data-id='PCdoB'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e13' x='367.47' y='327.18' width='23.86' height='24.54' fill='#B2CDE7' fill-opacity='1' stroke='none' title='Valor total: R$ 111.4 mi&amp;lt;br&amp;gt;Parlamentares: 14&amp;lt;br&amp;gt;Média por parlamentar: R$ 8.0 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 47.8%&amp;lt;br&amp;gt;Encargos especiais 17.9%&amp;lt;br&amp;gt;Assistência social 9.4%&amp;lt;br&amp;gt;Urbanismo 6.1%&amp;lt;br&amp;gt;Educação 4.8%' data-id='PSDB'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e14' x='393.98' y='337.11' width='23.86' height='14.62' fill='#99BEDF' fill-opacity='1' stroke='none' title='Valor total: R$ 66.3 mi&amp;lt;br&amp;gt;Parlamentares: 6&amp;lt;br&amp;gt;Média por parlamentar: R$ 11.1 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Educação 25.0%&amp;lt;br&amp;gt;Saúde 20.7%&amp;lt;br&amp;gt;Encargos especiais 11.3%&amp;lt;br&amp;gt;Assistência social 10.4%&amp;lt;br&amp;gt;Agricultura 7.4%' data-id='PODEMOS'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e15' x='420.49' y='338.26' width='23.86' height='13.47' fill='#91B8DC' fill-opacity='1' stroke='none' title='Valor total: R$ 61.1 mi&amp;lt;br&amp;gt;Parlamentares: 5&amp;lt;br&amp;gt;Média por parlamentar: R$ 12.2 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 33.2%&amp;lt;br&amp;gt;Assistência social 22.2%&amp;lt;br&amp;gt;Segurança pública 7.7%&amp;lt;br&amp;gt;Urbanismo 5.7%&amp;lt;br&amp;gt;Agricultura 5.6%' data-id='NOVO'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e16' x='447' y='338.43' width='23.86' height='13.29' fill='#92B9DC' fill-opacity='1' stroke='none' title='Valor total: R$ 60.3 mi&amp;lt;br&amp;gt;Parlamentares: 5&amp;lt;br&amp;gt;Média por parlamentar: R$ 12.1 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 38.2%&amp;lt;br&amp;gt;Encargos especiais 25.5%&amp;lt;br&amp;gt;Urbanismo 13.6%&amp;lt;br&amp;gt;Assistência social 8.0%&amp;lt;br&amp;gt;Gestão ambiental 5.0%' data-id='PRD'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e17' x='473.5' y='340.66' width='23.86' height='11.07' fill='#A1C3E2' fill-opacity='1' stroke='none' title='Valor total: R$ 50.2 mi&amp;lt;br&amp;gt;Parlamentares: 5&amp;lt;br&amp;gt;Média por parlamentar: R$ 10.0 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 33.7%&amp;lt;br&amp;gt;Encargos especiais 22.9%&amp;lt;br&amp;gt;Assistência social 10.1%&amp;lt;br&amp;gt;Desporto e lazer 8.8%&amp;lt;br&amp;gt;Cultura 7.3%' data-id='PV'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e18' x='500.01' y='343.08' width='23.86' height='8.64' fill='#A3C4E2' fill-opacity='1' stroke='none' title='Valor total: R$ 39.2 mi&amp;lt;br&amp;gt;Parlamentares: 4&amp;lt;br&amp;gt;Média por parlamentar: R$ 9.8 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 47.0%&amp;lt;br&amp;gt;Educação 25.4%&amp;lt;br&amp;gt;Encargos especiais 14.3%&amp;lt;br&amp;gt;Direitos da cidadania 6.6%&amp;lt;br&amp;gt;Ciência e Tecnologia 2.5%' data-id='CIDADANIA'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e19' x='526.52' y='343.43' width='23.86' height='8.29' fill='#C6DBEF' fill-opacity='1' stroke='none' title='Valor total: R$ 37.6 mi&amp;lt;br&amp;gt;Parlamentares: 7&amp;lt;br&amp;gt;Média por parlamentar: R$ 5.4 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 44.5%&amp;lt;br&amp;gt;Assistência social 22.3%&amp;lt;br&amp;gt;Encargos especiais 20.9%&amp;lt;br&amp;gt;Educação 8.7%&amp;lt;br&amp;gt;Múltiplo 2.7%' data-id='AVANTE'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e20' x='553.03' y='344.38' width='23.86' height='7.34' fill='#BCD4EB' fill-opacity='1' stroke='none' title='Valor total: R$ 33.3 mi&amp;lt;br&amp;gt;Parlamentares: 5&amp;lt;br&amp;gt;Média por parlamentar: R$ 6.7 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 40.5%&amp;lt;br&amp;gt;Encargos especiais 13.7%&amp;lt;br&amp;gt;Desporto e lazer 11.0%&amp;lt;br&amp;gt;Assistência social 7.8%&amp;lt;br&amp;gt;Educação 6.9%' data-id='SOLIDARIEDADE'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e21' x='579.54' y='349.71' width='23.86' height='2.01' fill='#A8C7E4' fill-opacity='1' stroke='none' title='Valor total: R$ 9.1 mi&amp;lt;br&amp;gt;Parlamentares: 1&amp;lt;br&amp;gt;Média por parlamentar: R$ 9.1 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Assistência social 29.6%&amp;lt;br&amp;gt;Saúde 27.4%&amp;lt;br&amp;gt;Educação 17.4%&amp;lt;br&amp;gt;Desporto e lazer 14.7%&amp;lt;br&amp;gt;Urbanismo 5.5%' data-id='REDE'/>\n   <rect id='svg_15528246_5db1_4821_9656_9e8a7f684957_e22' x='606.05' y='350.31' width='23.86' height='1.41' fill='#BED5EC' fill-opacity='1' stroke='none' title='Valor total: R$ 6.4 mi&amp;lt;br&amp;gt;Parlamentares: 1&amp;lt;br&amp;gt;Média por parlamentar: R$ 6.4 mi&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Principais áreas:&amp;lt;br&amp;gt;Saúde 81.2%&amp;lt;br&amp;gt;Desporto e lazer 15.6%&amp;lt;br&amp;gt;Cultura 3.1%' data-id='S.PART.'/>\n  <\/g>\n  <g clip-path='url(#svg_15528246_5db1_4821_9656_9e8a7f684957_c1)'>\n   <text x='35.55' y='354.87' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>0<\/text>\n   <text x='25.76' y='244.71' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>500<\/text>\n   <text x='18.41' y='134.54' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>1.000<\/text>\n   <text transform='translate(57.79,369.06) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PT<\/text>\n   <text transform='translate(84.64,368.72) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PL<\/text>\n   <text transform='translate(99.05,380.81) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>UNIÃO<\/text>\n   <text transform='translate(96.52,409.85) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>REPUBLICANOS<\/text>\n   <text transform='translate(163.48,369.41) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PP<\/text>\n   <text transform='translate(185.50,373.90) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PSD<\/text>\n   <text transform='translate(210.97,374.93) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>MDB<\/text>\n   <text transform='translate(234.70,377.71) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PSOL<\/text>\n   <text transform='translate(265.38,373.55) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PDT<\/text>\n   <text transform='translate(291.88,373.56) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PSB<\/text>\n   <text transform='translate(313.20,378.74) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PODE<\/text>\n   <text transform='translate(337.63,380.82) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PCdoB<\/text>\n   <text transform='translate(366.91,378.05) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PSDB<\/text>\n   <text transform='translate(378.56,392.91) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PODEMOS<\/text>\n   <text transform='translate(418.55,379.43) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>NOVO<\/text>\n   <text transform='translate(450.25,374.24) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PRD<\/text>\n   <text transform='translate(481.59,369.41) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PV<\/text>\n   <text transform='translate(482.53,394.98) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>CIDADANIA<\/text>\n   <text transform='translate(518.95,385.07) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>AVANTE<\/text>\n   <text transform='translate(518.94,411.58) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>SOLIDARIEDADE<\/text>\n   <text transform='translate(578.65,378.39) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>REDE<\/text>\n   <text transform='translate(599.50,384.04) rotate(-45.00)' font-size='6.6pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>S.PART.<\/text>\n   <text transform='translate(13.36,247.94) rotate(-90.00)' font-size='8.25pt' font-family='Arial'>Milhões de reais (R$)<\/text>\n   <text x='650.33' y='147.72' font-size='8.25pt' font-family='Arial'>Média por<\/text>\n   <text x='650.33' y='159.6' font-size='8.25pt' font-family='Arial'>parlamentar<\/text>\n   <image x='650.33' y='166.24' width='17.28' height='86.4' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAAjElEQVQ4jdVTWw6AMAhruYlH9HCeT3/IRNcNTEyMf2RQHm2HZd12IwADAY9AGAkY0N54i+jZCIPDzmzXhR4lI9nepl3iyPnijNOGXRymimczhov/kRyHUdTl3viAHCnjO+T0mxacUyZHnK/IUZ+uRI5SdS5AUfNk0z+TU+iSOOex/yQ510S4d6hgf9YB5AYF5lav6tUAAAAASUVORK5CYII=' xmlns:xlink='http://www.w3.org/1999/xlink'/>\n   <polyline points='664.15,233.76 667.61,233.76' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='664.15,213.49 667.61,213.49' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='664.15,193.23 667.61,193.23' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='664.15,172.96 667.61,172.96' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='653.78,233.76 650.33,233.76' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='653.78,213.49 650.33,213.49' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='653.78,193.23 650.33,193.23' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='653.78,172.96 650.33,172.96' fill='none' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.37' stroke-linejoin='round' stroke-linecap='butt'/>\n   <text x='673.08' y='236.91' font-size='6.6pt' font-family='Arial'>10 mi<\/text>\n   <text x='673.08' y='216.64' font-size='6.6pt' font-family='Arial'>15 mi<\/text>\n   <text x='673.08' y='196.38' font-size='6.6pt' font-family='Arial'>20 mi<\/text>\n   <text x='673.08' y='176.11' font-size='6.6pt' font-family='Arial'>25 mi<\/text>\n   <text x='45.38' y='31.8' font-size='8.25pt' font-family='Arial' fill='#4D4D4D' fill-opacity='1'>PT e PL lideram destinação de emendas parlamentares em 2024<\/text>\n   <text x='45.38' y='15.5' font-size='10.5pt' font-weight='bold' font-family='Arial'>Valor total empenhado em emendas parlamentares por partido<\/text>\n   <text x='510.1' y='424.67' font-size='6.6pt' font-family='Arial'>Dados: Portal da Transparência<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_15528246_5db1_4821_9656_9e8a7f684957","ratio":1.666666666666667,"settings":{"tooltip":{"css":".tooltip_SVGID_ { background-color:white;color:black;padding:10px;border-radius:5px;font-family:Arial;font-size:12px; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","opacity":0.95,"offx":10,"offy":0,"use_cursor_pos":true,"use_fill":false,"use_stroke":false,"delay_over":200,"delay_out":500},"hover":{"css":".hover_data_SVGID_ { fill-opacity:0.8; }","reactive":false,"nearest_distance":null},"hover_inv":{"css":""},"hover_key":{"css":".hover_key_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_key_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_key_SVGID_ { fill:orange;stroke:black; }\nline.hover_key_SVGID_, polyline.hover_key_SVGID_ { fill:none;stroke:orange; }\nrect.hover_key_SVGID_, polygon.hover_key_SVGID_, path.hover_key_SVGID_ { fill:orange;stroke:none; }\nimage.hover_key_SVGID_ { stroke:orange; }","reactive":true},"hover_theme":{"css":".hover_theme_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_theme_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_theme_SVGID_ { fill:orange;stroke:black; }\nline.hover_theme_SVGID_, polyline.hover_theme_SVGID_ { fill:none;stroke:orange; }\nrect.hover_theme_SVGID_, polygon.hover_theme_SVGID_, path.hover_theme_SVGID_ { fill:orange;stroke:none; }\nimage.hover_theme_SVGID_ { stroke:orange; }","reactive":true},"select":{"css":".select_data_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_data_SVGID_ { stroke:none;fill:red; }\ncircle.select_data_SVGID_ { fill:red;stroke:black; }\nline.select_data_SVGID_, polyline.select_data_SVGID_ { fill:none;stroke:red; }\nrect.select_data_SVGID_, polygon.select_data_SVGID_, path.select_data_SVGID_ { fill:red;stroke:none; }\nimage.select_data_SVGID_ { stroke:red; }","type":"multiple","only_shiny":true,"selected":[]},"select_inv":{"css":""},"select_key":{"css":".select_key_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_key_SVGID_ { stroke:none;fill:red; }\ncircle.select_key_SVGID_ { fill:red;stroke:black; }\nline.select_key_SVGID_, polyline.select_key_SVGID_ { fill:none;stroke:red; }\nrect.select_key_SVGID_, polygon.select_key_SVGID_, path.select_key_SVGID_ { fill:red;stroke:none; }\nimage.select_key_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"select_theme":{"css":".select_theme_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_theme_SVGID_ { stroke:none;fill:red; }\ncircle.select_theme_SVGID_ { fill:red;stroke:black; }\nline.select_theme_SVGID_, polyline.select_theme_SVGID_ { fill:none;stroke:red; }\nrect.select_theme_SVGID_, polygon.select_theme_SVGID_, path.select_theme_SVGID_ { fill:red;stroke:none; }\nimage.select_theme_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"zoom":{"min":1,"max":1,"duration":300},"toolbar":{"position":"topright","pngname":"diagram","tooltips":null,"fixed":false,"hidden":[],"delay_over":200,"delay_out":500},"sizing":{"rescale":true,"width":1}}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="estatísticas-descritivas-das-emendas-parlamentares" class="level3">
+<h3 class="anchored" data-anchor-id="estatísticas-descritivas-das-emendas-parlamentares">Estatísticas Descritivas das Emendas Parlamentares</h3>
+<div class="columns">
+<div class="column" data-padding="10px" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/ammendments_histogram.png" class="img-fluid figure-img"></p>
+<figcaption>Figura 3: Histograma da distribuição dos valores das emendas parlamentares em 2024</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" data-padding="10px" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/ammendments_stats.png" class="img-fluid figure-img"></p>
+<figcaption>Tabela 2: Medidas de tendência central e dispersão do valor empenhado em emendas parlamentares em 2024</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="distribuição-das-emendas-por-área-de-aplicação" class="level3">
+<h3 class="anchored" data-anchor-id="distribuição-das-emendas-por-área-de-aplicação">Distribuição das Emendas por Área de Aplicação</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/emendas_2024_treemap.png" class="img-fluid figure-img"></p>
+<figcaption>Figura 4: Distribuição dos recursos por área de aplicação</figcaption>
+</figure>
+</div>
+</section>
+<section id="classificação-ideológica-dos-partidos" class="level3">
+<h3 class="anchored" data-anchor-id="classificação-ideológica-dos-partidos">Classificação Ideológica dos Partidos</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/parties_by_ideology_table.png" class="img-fluid figure-img"></p>
+<figcaption>Tabela 3: Classificação ideológica dos partidos políticos</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="distribuição-de-parlamentares-por-espectro-ideológico" class="level2">
+<h2 class="anchored" data-anchor-id="distribuição-de-parlamentares-por-espectro-ideológico">Distribuição de parlamentares por espectro ideológico</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/ideology_table.png" class="img-fluid figure-img"></p>
+<figcaption>Tabela 4: Distribuição de parlamentares por espectro ideológico</figcaption>
+</figure>
+</div>
+<section id="distribuição-de-recursos-por-área-de-aplicação-e-espectro-ideológico" class="level3">
+<h3 class="anchored" data-anchor-id="distribuição-de-recursos-por-área-de-aplicação-e-espectro-ideológico">Distribuição de Recursos por Área de Aplicação e Espectro Ideológico</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="plots/radar_functions_by_ideology.png" class="img-fluid figure-img"></p>
+<figcaption>Figuras 5: Distribuição dos recursos por área e espectro ideológico</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="conclusão" class="level2">
+<h2 class="anchored" data-anchor-id="conclusão">7. Conclusão</h2>
+<p>Revisão dos principais resultados obtidos, discussão dos desafios enfrentados durante a análise (como a limpeza dos dados ou a classificação ideológica dos partidos) e sugestões para futuras pesquisas, como a inclusão de mais variáveis ou a expansão para outros anos de análise.</p>
+</section>
+<section id="referências" class="level2">
+<h2 class="anchored" data-anchor-id="referências">8. Referências</h2>
+<ul>
+<li><strong>Portal da Transparência do Governo:</strong> <a href="https://www.portaltransparencia.gov.br">https://www.portaltransparencia.gov.br</a></li>
+<li><strong>Câmara dos Deputados:</strong> <a href="https://www.camara.leg.br/transparencia">https://www.camara.leg.br/transparencia</a></li>
+<li><strong>Senado Federal:</strong> <a href="https://www25.senado.leg.br/transparencia">https://www25.senado.leg.br/transparencia</a></li>
+<li><strong>Valor Econômico:</strong> <a href="https://valor.globo.com">https://valor.globo.com</a></li>
+</ul>
+<p>https://portaldatransparencia.gov.br/origem-dos-dados</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -3,7 +3,20 @@ library(tidyverse)
 library(janitor)
 library(stringdist)
 
-source("utils.R")
+encontrar_melhor_match_completo <- function(nome, parlamentares_df) {
+  matches_parlamentar <- stringdist(nome, parlamentares_df$nome_sanitized, method = "jw")
+  matches_civil <- stringdist(nome, parlamentares_df$nome_civil_sanitized, method = "jw")
+
+  melhor_idx_parlamentar <- which.min(matches_parlamentar)
+  melhor_idx_civil <- which.min(matches_civil)
+
+  return(list(
+    match_parlamentar = parlamentares_df$nome_sanitized[melhor_idx_parlamentar],
+    dist_parlamentar = matches_parlamentar[melhor_idx_parlamentar],
+    match_civil = parlamentares_df$nome_civil_sanitized[melhor_idx_civil],
+    dist_civil = matches_civil[melhor_idx_civil]
+  ))
+}
 
 deputies <- read_csv2("data/raw/deputados2.csv", locale = locale(encoding = "UTF-8")) |>
   clean_names() |>
@@ -32,7 +45,6 @@ senators <- read_csv2("data/raw/senadores.csv", locale = locale(encoding = "UTF-
 
 glimpse(senators)
 
-
 amendments <- read_csv2("data/raw/emendas_2023_2024.csv", locale = locale(encoding = "UTF-8")) |>
   clean_names() |>
   mutate(
@@ -45,74 +57,17 @@ amendments <- read_csv2("data/raw/emendas_2023_2024.csv", locale = locale(encodi
 
 glimpse(amendments)
 
-
 amendments <- amendments |>
   filter(str_starts(tipo_de_emenda, "Emenda Individual"))
 
-print("Tipos de emenda:")
-print(count(amendments, tipo_de_emenda))
-
-
-
-
-nomes_deputados <- deputies$nome_sanitized |>
-  unique() |>
-  na.omit()
-nomes_senadores <- senators$nome_sanitized |>
-  unique() |>
-  na.omit()
-
+nomes_deputados <- deputies$nome_sanitized |> unique() |> na.omit()
+nomes_senadores <- senators$nome_sanitized |> unique() |> na.omit()
 nomes_parlamentares <- c(nomes_deputados, nomes_senadores)
-nomes_emendas <- amendments$autor_sanitized |>
-  unique() |>
-  na.omit()
-
+nomes_emendas <- amendments$autor_sanitized |> unique() |> na.omit()
 
 nomes_match <- intersect(nomes_parlamentares, nomes_emendas)
 nomes_apenas_parlamentares <- setdiff(nomes_parlamentares, nomes_emendas)
 nomes_apenas_emendas <- setdiff(nomes_emendas, nomes_parlamentares)
-
-
-cat("Nomes que correspondem:", length(nomes_match), "\n")
-cat("Nomes apenas em parlamentares:", length(nomes_apenas_parlamentares), "\n")
-cat("Nomes apenas em emendas:", length(nomes_apenas_emendas), "\n")
-
-
-amendments |>
-  filter(autor_sanitized %in% nomes_apenas_emendas) |>
-  group_by(autor_sanitized) |>
-  summarise(
-    qtd_emendas = n(),
-    valor_total = sum(valor_empenhado, na.rm = TRUE),
-    valor_medio = mean(valor_empenhado, na.rm = TRUE)
-  ) |>
-  arrange(desc(qtd_emendas)) |>
-  print(n = Inf)
-
-
-
-print("Nomes que aparecem apenas no DataFrame de parlamentares:")
-print(nomes_apenas_parlamentares)
-
-print("Nomes que aparecem apenas no DataFrame de emendas:")
-print(nomes_apenas_emendas)
-
-
-encontrar_melhor_match_completo <- function(nome, parlamentares_df) {
-  matches_parlamentar <- stringdist(nome, parlamentares_df$nome_sanitized, method = "jw")
-  matches_civil <- stringdist(nome, parlamentares_df$nome_civil_sanitized, method = "jw")
-
-  melhor_idx_parlamentar <- which.min(matches_parlamentar)
-  melhor_idx_civil <- which.min(matches_civil)
-
-  return(list(
-    match_parlamentar = parlamentares_df$nome_sanitized[melhor_idx_parlamentar],
-    dist_parlamentar = matches_parlamentar[melhor_idx_parlamentar],
-    match_civil = parlamentares_df$nome_civil_sanitized[melhor_idx_civil],
-    dist_civil = matches_civil[melhor_idx_civil]
-  ))
-}
-
 
 parlamentares_combined <- bind_rows(
   deputies |>
@@ -123,7 +78,6 @@ parlamentares_combined <- bind_rows(
       tipo = "senador"
     )
 )
-
 
 matches_df <- data.frame(
   nome_emenda = nomes_emendas
@@ -137,7 +91,6 @@ matches_df <- data.frame(
   ) |>
   select(-resultados)
 
-
 matches_df <- matches_df |>
   left_join(
     parlamentares_combined |>
@@ -146,16 +99,13 @@ matches_df <- matches_df |>
     by = c("match_parlamentar" = "nome_sanitized")
   )
 
-
-View(matches_df)
-
-
 parlamentares_info <- parlamentares_combined |>
   select(
     nome_sanitized,
     nome_civil,
     partido,
-    tipo
+    tipo,
+    espectro
   ) |>
   distinct()
 
@@ -166,20 +116,30 @@ amendments <- amendments |>
     by = c("autor_sanitized" = "nome_emenda")
   ) |>
   left_join(
-    parlamentares_info,
+    parlamentares_info |>
+      left_join(espectros_partidos, by = "partido"),
     by = c("match_parlamentar" = "nome_sanitized")
   )
 
-# Verificar o resultado
-glimpse(amendments)
-View(amendments)
+  
+espectros_partidos <- read_csv2("data/raw/espectros_partidos.csv", locale = locale(encoding = "UTF-8")) |>
+  clean_names() |>
+  rename(partido = nome) |>
+  mutate(
+    espectro_2024 = valor_economico_2024_38,
+    espectro = case_when(
+      valor_economico_2024_38 == "direita" ~ "direita",
+      valor_economico_2024_38 == "centro-direita" ~ "centro-direita",
+      valor_economico_2024_38 == "centro" ~ "centro",
+      valor_economico_2024_38 == "centro-esquerda" ~ "centro-esquerda",
+      valor_economico_2024_38 == "esquerda" ~ "esquerda",
+      valor_economico_2024_38 == "não respondeu" ~ "não classificado",
+      valor_economico_2024_38 == "visão independente" ~ "não classificado",
+      TRUE ~ "não classificado"
+    )
+  ) |>
+  select(partido, espectro)
 
-if (!dir.exists("data/processed")) {
-  dir.create("data/processed")
-}
-write.csv2(amendments, "data/processed/emendas_2023_2024_clean.csv", row.names = FALSE)
-
-# Criar DataFrame combinado de todos os parlamentares
 todos_parlamentares <- bind_rows(
   deputies |>
     select(
@@ -202,7 +162,13 @@ todos_parlamentares <- bind_rows(
   mutate(
     nome = str_to_title(nome)
   ) |>
-  distinct() # Remove possíveis duplicatas
+  distinct()
 
-# Salvar o DataFrame combinado
+todos_parlamentares <- todos_parlamentares |>
+  left_join(espectros_partidos, by = "partido")
+
+if (!dir.exists("data/processed")) {
+  dir.create("data/processed")
+}
+write.csv2(amendments, "data/processed/emendas_2023_2024_clean.csv", row.names = FALSE)
 write.csv2(todos_parlamentares, "data/processed/parlamentares.csv", row.names = FALSE)

@@ -1,9 +1,4 @@
-library(tidyverse)
-library(ggthemes)
-library(treemapify)
-
-
-amendments <- read_csv2("data/processed/emendas_2023_2024_clean.csv")
+source("analysis/config/common.R")
 
 glimpse(amendments)
 
@@ -16,21 +11,16 @@ function_totals <- amendments |>
     num_emendas = n()
   )
 
-grouped_functions <- function_totals |>
+amendment_data <- function_totals |>
   mutate(
     proporcao = valor_total / sum(valor_total),
     funcao = if_else(proporcao <= 0.03, "Outros", funcao)
-  )
-
-consolidated_totals <- grouped_functions |>
+  ) |>
   group_by(funcao) |>
   summarise(
     valor_total = sum(valor_total),
     num_emendas = sum(num_emendas)
   ) |>
-  arrange(desc(valor_total))
-
-amendment_data <- consolidated_totals |>
   mutate(
     proporcao = valor_total / sum(valor_total),
     label_texto = sprintf("R$ %.0f mi\n(%.1f%%)", 
@@ -66,4 +56,4 @@ ggplot(amendment_data, aes(
     name = "Área de Aplicação"
   )
 
-ggsave("plots/emendas_2024_treemap.png", width = 12, height = 10, dpi = 300)
+ggsave("plots/emendas_2024_treemap.png", width = 10, height = 6, dpi = 300)
