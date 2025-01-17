@@ -13,7 +13,8 @@ required_packages <- c(
   "gt",
   "fmsb",
   "ggiraph",
-  "ggiraphExtra"
+  "ggiraphExtra",
+  "treemap"
 )
 
 new_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]

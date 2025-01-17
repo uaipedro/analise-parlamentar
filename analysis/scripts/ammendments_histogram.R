@@ -1,6 +1,5 @@
 source("analysis/config/common.R")
 
-# Criar histograma
 histogram_plot <- ggplot(amendments, aes(x = valor_empenhado)) +
   geom_histogram(fill = "steelblue", color = "white", bins = 20) +
   labs(
@@ -17,5 +16,4 @@ histogram_plot <- ggplot(amendments, aes(x = valor_empenhado)) +
     plot.background = element_rect(fill = "white")
   )
 
-# Salvar o gráfico
 ggsave("plots/ammendments_histogram.png", histogram_plot, width = 8, height = 4) 
