@@ -26,7 +26,7 @@ format:
 # Valores {orientation="columns"}
 
 
-::: {.card .fill}
+::: {.card .fill }
 <iframe src="plots/value_by_party.html" class="content-fullwidth"></iframe>
 :::
 
@@ -42,12 +42,8 @@ format:
 
 # Distribuição {orientation="columns"}
 
-## 
-coluna 1
 
-## 
-coluna 2
-
+![Distribuição dos recursos por área e espectro ideológico](plots/treemap_functions_by_ideology.png){#fig-treemap}
 
 
 # Fontes {orientation="columns"}
