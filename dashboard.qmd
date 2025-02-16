@@ -1,0 +1,102 @@
+---
+title: "Dashboard - Emendas Parlamentares"
+author: "Pedro Mambelli"
+format: 
+  dashboard:
+    css: styles.css
+---
+
+# Home {orientation="columns"}
+
+##
+
+
+![Distribuição dos parlamentares por partido político em 2024](plots/party_distribution.png){#fig-party-distribution}
+
+##
+
+::: {.card}
+![Classificação ideológica dos partidos políticos](plots/parties_by_ideology_table.png){#tbl-ideology }
+:::
+
+::: {.card}
+![Distribuição de parlamentares por espectro ideológico](plots/ideology_table.png){#tbl-ideology-dist}
+:::
+
+# Valores {orientation="columns"}
+
+
+::: {.card .fill }
+<iframe src="plots/value_by_party.html" class="content-fullwidth"></iframe>
+:::
+
+::: {.card .fill }
+<iframe src="plots/value_by_party.html" class="content-fullwidth"></iframe>
+:::
+
+# Distribuição {orientation="columns"}
+
+## 
+coluna 1
+
+## 
+coluna 2
+
+
+
+# Fontes {orientation="columns"}
+
+##
+
+Os dados utilizados neste estudo foram acessados em 06/01/2025 e provêm de:
+
+1. **Portal da Transparência**
+   - Emendas parlamentares individuais de 2024, disponibilizadas pelos ministérios e órgãos do Poder Executivo Federal
+
+2. **Portais da Câmara e Senado**
+   - Dados cadastrais dos parlamentares da legislatura 2023-2027
+
+3. **Valor Econômico (04/10/2024)**
+   - Classificação ideológica dos partidos políticos baseada em autodeclarações das siglas
+
+<!-- ::: {.aside}
+Fontes:
+- [Portal da Transparência](https://portaldatransparencia.gov.br)
+- [Câmara dos Deputados](https://www.camara.leg.br/internet/deputado/deputado.xls)
+- [Senado Federal](https://www25.senado.leg.br/web/transparencia/sen/em-exercicio/-/e/por-nome)
+- [Valor Econômico](https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml)
+::: -->
+
+## 
+- **Tabela de Emendas:**
+  - Total de 17 colunas originais, incluindo detalhes orçamentários e administrativos (ex: `Numero_Emenda`, `Plano_Orcamentario`, `Valor_Restos_Pagar_Inscritos`)
+
+- **Tabela de Deputados:**
+  - Total de 9 colunas originais, incluindo informações administrativas (ex: `Endereco`, `Gabinete`, `Telefone`)
+
+- **Tabela de Senadores:**
+  - Total de 10 colunas originais, incluindo dados pessoais e de contato (ex: `Data_Nascimento`, `Chefe_Gabinete`)
+
+- **Tabela de Espectros Ideológicos:**
+  - Duas colunas: `Partido` e `Espectro`
+
+**Colunas utilizadas na análise:**
+
+> As bases de dados de parlamentares e espectros foram utilizadas para complementar os dados das emendas com informações sobre filiação partidária e posicionamento ideológico dos autores.
+
+- `Ano`: Ano de referência da emenda parlamentar (2024)
+- `Autor_Emenda`: Nome completo do parlamentar autor da emenda
+- `Funcao`: Área de aplicação da emenda (ex: Saúde, Educação, Infraestrutura)
+- `Valor_Empenhado`: Valor em reais destinado à emenda
+- `Nome_Parlamentar`: Nome do parlamentar conforme registrado na Câmara/Senado
+- `Partido`: Sigla do partido ao qual o parlamentar está filiado
+- `Espectro`: Classificação ideológica do partido (Esquerda, Centro ou Direita) segundo autodeclaração
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,6 @@
 source("analysis/config/common.R")
 
+# função para formatar os valores em reais (levando em conta mi e bi)
 fmt_reais_auto <- function(x) {
   ifelse(abs(as.numeric(x)) >= 1e9,
          sprintf("R$ %.2f bi", x/1e9),
