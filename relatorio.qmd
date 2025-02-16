@@ -3,19 +3,20 @@ title: "Análise Exploratória de Dados de Emendas Parlamentares em 2024"
 author: "Pedro Mambelli"
 date: "2025-01-17"
 format: html
+lang: pt-BR
+embed-resources: true
 ---
 
 ## 1. Introdução
 
-### 1.1 Descrição Geral
 Anualmente, deputados e senadores têm a prerrogativa de direcionar parte do orçamento federal para projetos específicos através das emendas parlamentares. A partir de 2015, com a Emenda Constitucional 86, o governo passou a ter a obrigação de executar essas emendas individuais até o limite de 1,2% da Receita Corrente Líquida, sendo que metade desse montante deve ser necessariamente destinada à área da saúde.
 
 Como esse recurso público é efetivamente distribuído? Este estudo analisa as emendas individuais de 2024 para compreender melhor quanto e como os recursos são alocados por diferentes partidos e grupos políticos. O foco exclusivo nas emendas individuais - excluindo as de bancada e comissões - permite uma análise mais precisa das prioridades dos parlamentares de cada partido.
-
+<!-- 
 
 ::: {.aside}
 [Emenda Constitucional nº 86/2015](https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc86.htm).
-:::
+::: -->
 
 ## 2. Descrição dos Dados
 
@@ -32,15 +33,13 @@ Os dados utilizados neste estudo foram acessados em 06/01/2025 e provêm de:
 3. **Valor Econômico (04/10/2024)**
    - Classificação ideológica dos partidos políticos baseada em autodeclarações das siglas
 
-::: {.aside}
+<!-- ::: {.aside}
 Fontes:
 - [Portal da Transparência](https://portaldatransparencia.gov.br)
 - [Câmara dos Deputados](https://www.camara.leg.br/internet/deputado/deputado.xls)
 - [Senado Federal](https://www25.senado.leg.br/web/transparencia/sen/em-exercicio/-/e/por-nome)
 - [Valor Econômico](https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml)
-:::
-
-
+::: -->
 
 ### 2.2 Estrutura dos Dados
 - **Tabela de Emendas:**
@@ -57,7 +56,7 @@ Fontes:
 
 **Colunas utilizadas na análise:**
 
-> As bases de dados de parlamentares e espectros foram utilizadas para complementar os dados das emendas com informações sobre filiação partidária e posicionamento ideológico dos autores das emendas.
+> As bases de dados de parlamentares e espectros foram utilizadas para complementar os dados das emendas com informações sobre filiação partidária e posicionamento ideológico dos autores.
 
 - `Ano`: Ano de referência da emenda parlamentar (2024)
 - `Autor_Emenda`: Nome completo do parlamentar autor da emenda
@@ -66,8 +65,6 @@ Fontes:
 - `Nome_Parlamentar`: Nome do parlamentar conforme registrado na Câmara/Senado
 - `Partido`: Sigla do partido ao qual o parlamentar está filiado
 - `Espectro`: Classificação ideológica do partido (Esquerda, Centro ou Direita) segundo autodeclaração
-
-  
 
 ## 3. Perguntas de Pesquisa
 
@@ -93,10 +90,12 @@ Na [@fig-treemap], foi apresentado um treemap que mostra a distribuição dos re
 
 ## 4. Resultados Preliminares
 
-### Composição Partidária dos Parlamentares em 2024
+O cenário político brasileiro em 2024 apresenta uma significativa fragmentação partidária, como podemos observar na distribuição abaixo:
+
 ![Distribuição dos parlamentares por partido político em 2024](plots/party_distribution.png){#fig-party-distribution}
 
-### Distribuição Total de Emendas Parlamentares por Partido em 2024
+Esta fragmentação partidária se reflete diretamente no volume de recursos distribuídos através das emendas, com algumas legendas concentrando valores expressivamente maiores:
+
 ```{r}
 #| label: fig-value-by-party
 #| fig-cap: "Figura 2: Distribuição total de emendas parlamentares por partido em 2024"
@@ -106,7 +105,8 @@ Na [@fig-treemap], foi apresentado um treemap que mostra a distribuição dos re
 source("analysis/scripts/value_by_party.R")
 interactive_plot
 ```
-### Estatísticas Descritivas das Emendas Parlamentares
+
+Para compreender melhor o padrão de distribuição dos valores individuais das emendas, analisamos suas estatísticas descritivas e distribuição:
 
 ::: {.columns}
 
@@ -122,23 +122,42 @@ interactive_plot
 :::
 :::
 
-### Classificação Ideológica dos Partidos
+Além da distribuição partidária, é fundamental entender o posicionamento ideológico das legendas para uma análise mais aprofundada:
+
 ![Classificação ideológica dos partidos políticos](plots/parties_by_ideology_table.png){#tbl-ideology}
 
-### Distribuição de parlamentares por espectro ideológico
+Esta classificação ideológica nos permite visualizar como os parlamentares se distribuem ao longo do espectro político:
+
 ![Distribuição de parlamentares por espectro ideológico](plots/ideology_table.png){#tbl-ideology-dist}
 
-### Distribuição de Recursos por Área de Aplicação e Espectro Ideológico
+Por fim, podemos verificar como cada espectro ideológico priorizou diferentes áreas na alocação de seus recursos em 2024:
+
 ![Distribuição dos recursos por área e espectro ideológico](plots/treemap_functions_by_ideology.png){#fig-treemap}
 
+## 5. Discussão
+
+Embora uma parcela considerável dos parlamentares pertença a partidos sem autodeclaração ideológica clara (26,3%), é notável que as duas maiores bancadas - PT e PL - se posicionam nos opostos do espectro político (esquerda e direita, respectivamente). 
+Alem disso, no que diz respeito às funções orçamentárias, é possível observar os agrupamentos de espectros ideológicos tiveram diferentes prioridades na alocação de recursos oriundos das emendas nas quais seus parlamentares foram autores.
+
 ## 7. Conclusão
-Revisão dos principais resultados obtidos, discussão dos desafios enfrentados durante a análise (como a limpeza dos dados ou a classificação ideológica dos partidos) e sugestões para futuras pesquisas, como a inclusão de mais variáveis ou a expansão para outros anos de análise.
+
+Um dos principais desafios deste estudo foi estabelecer uma classificação ideológica consistente dos partidos políticos. A opção por utilizar autodeclarações das legendas buscou minimizar possíveis vieses na análise.
+
+Vale ressaltar que a ausência de informações partidárias diretamente na base de dados de emendas do Portal da Transparência dificulta que o cidadão comum faça análises agregadas por partido ou espectro ideológico, informações relevantes para o controle social.
+
+Apesar dessas limitações, o estudo permitiu identificar padrões distintos na alocação de recursos entre diferentes grupos políticos, oferecendo insights sobre suas prioridades orçamentárias.
 
 ## 8. Referências
-- **Portal da Transparência do Governo:** [https://www.portaltransparencia.gov.br](https://www.portaltransparencia.gov.br)
-- **Câmara dos Deputados:** [https://www.camara.leg.br/transparencia](https://www.camara.leg.br/transparencia)
-- **Senado Federal:** [https://www25.senado.leg.br/transparencia](https://www25.senado.leg.br/transparencia)
-- **Valor Econômico:** [https://valor.globo.com](https://valor.globo.com)
+
+BRASIL. [Emenda Constitucional nº 86, de 17 de março de 2015]. Altera os arts. 165, 166 e 198 da Constituição Federal, para tornar obrigatória a execução da programação orçamentária que especifica. Diário Oficial da União: seção 1, Brasília, DF, 18 mar. 2015. Disponível em: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc86.htm. Acesso em: 06 jan. 2025.
+
+BRASIL. Controladoria-Geral da União. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.portaltransparencia.gov.br. Acesso em: 06 jan. 2025.
+
+BRASIL. Câmara dos Deputados. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.camara.leg.br/transparencia. Acesso em: 06 jan. 2025.
+
+BRASIL. Senado Federal. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www25.senado.leg.br/transparencia. Acesso em: 06 jan. 2025.
+
+DE DIREITA ou esquerda? Veja como os partidos políticos se definem no Brasil. Valor Econômico, São Paulo, 04 out. 2024. Disponível em: https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml. Acesso em: 06 jan. 2025.
 
 https://portaldatransparencia.gov.br/origem-dos-dados
 
