@@ -26,12 +26,18 @@ format:
 # Valores {orientation="columns"}
 
 
-::: {.card .fill }
+::: {.card .fill}
 <iframe src="plots/value_by_party.html" class="content-fullwidth"></iframe>
 :::
 
+::: {.rows}
 ::: {.card .fill }
-<iframe src="plots/value_by_party.html" class="content-fullwidth"></iframe>
+![Histograma da distribuição dos valores das emendas parlamentares em 2024](plots/ammendments_histogram.png){#fig-histogram}
+:::
+
+::: {.card .fill height="300px"}
+![Medidas de tendência central e dispersão do valor empenhado em emendas parlamentares em 2024](plots/ammendments_stats.png){#tbl-stats height="150px"}
+:::
 :::
 
 # Distribuição {orientation="columns"}
