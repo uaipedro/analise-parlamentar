@@ -69,3 +69,4 @@ Thumbs.db
 # Arquivos de dependências
 requirements.txt.lock
 poetry.lock
+/.quarto/

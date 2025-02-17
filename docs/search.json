@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "relatorio.html",
+    "href": "relatorio.html",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "",
+    "text": "Anualmente, deputados e senadores têm a prerrogativa de direcionar parte do orçamento federal para projetos específicos através das emendas parlamentares. A partir de 2015, com a Emenda Constitucional 86, o governo passou a ter a obrigação de executar essas emendas individuais até o limite de 1,2% da Receita Corrente Líquida, sendo que metade desse montante deve ser necessariamente destinada à área da saúde.\nComo esse recurso público é efetivamente distribuído? Este estudo analisa as emendas individuais de 2024 para compreender melhor quanto e como os recursos são alocados por diferentes partidos e grupos políticos. O foco exclusivo nas emendas individuais - excluindo as de bancada e comissões - permite uma análise mais precisa das prioridades dos parlamentares de cada partido."
+  },
+  {
+    "objectID": "relatorio.html#introdução",
+    "href": "relatorio.html#introdução",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "",
+    "text": "Anualmente, deputados e senadores têm a prerrogativa de direcionar parte do orçamento federal para projetos específicos através das emendas parlamentares. A partir de 2015, com a Emenda Constitucional 86, o governo passou a ter a obrigação de executar essas emendas individuais até o limite de 1,2% da Receita Corrente Líquida, sendo que metade desse montante deve ser necessariamente destinada à área da saúde.\nComo esse recurso público é efetivamente distribuído? Este estudo analisa as emendas individuais de 2024 para compreender melhor quanto e como os recursos são alocados por diferentes partidos e grupos políticos. O foco exclusivo nas emendas individuais - excluindo as de bancada e comissões - permite uma análise mais precisa das prioridades dos parlamentares de cada partido."
+  },
+  {
+    "objectID": "relatorio.html#descrição-dos-dados",
+    "href": "relatorio.html#descrição-dos-dados",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "2. Descrição dos Dados",
+    "text": "2. Descrição dos Dados\n\n2.1 Fontes dos Dados\nOs dados utilizados neste estudo foram acessados em 06/01/2025 e provêm de:\n\nPortal da Transparência\n\nEmendas parlamentares individuais de 2024, disponibilizadas pelos ministérios e órgãos do Poder Executivo Federal\n\nPortais da Câmara e Senado\n\nDados cadastrais dos parlamentares da legislatura 2023-2027\n\nValor Econômico (04/10/2024)\n\nClassificação ideológica dos partidos políticos baseada em autodeclarações das siglas\n\n\n\n\n\n2.2 Estrutura dos Dados\n\nTabela de Emendas:\n\nTotal de 17 colunas originais, incluindo detalhes orçamentários e administrativos (ex: Numero_Emenda, Plano_Orcamentario, Valor_Restos_Pagar_Inscritos)\n\nTabela de Deputados:\n\nTotal de 9 colunas originais, incluindo informações administrativas (ex: Endereco, Gabinete, Telefone)\n\nTabela de Senadores:\n\nTotal de 10 colunas originais, incluindo dados pessoais e de contato (ex: Data_Nascimento, Chefe_Gabinete)\n\nTabela de Espectros Ideológicos:\n\nDuas colunas: Partido e Espectro\n\n\nColunas utilizadas na análise:\n\nAs bases de dados de parlamentares e espectros foram utilizadas para complementar os dados das emendas com informações sobre filiação partidária e posicionamento ideológico dos autores.\n\n\nAno: Ano de referência da emenda parlamentar (2024)\nAutor_Emenda: Nome completo do parlamentar autor da emenda\nFuncao: Área de aplicação da emenda (ex: Saúde, Educação, Infraestrutura)\nValor_Empenhado: Valor em reais destinado à emenda\nNome_Parlamentar: Nome do parlamentar conforme registrado na Câmara/Senado\nPartido: Sigla do partido ao qual o parlamentar está filiado\nEspectro: Classificação ideológica do partido (Esquerda, Centro ou Direita) segundo autodeclaração"
+  },
+  {
+    "objectID": "relatorio.html#perguntas-de-pesquisa",
+    "href": "relatorio.html#perguntas-de-pesquisa",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "3. Perguntas de Pesquisa",
+    "text": "3. Perguntas de Pesquisa\n1. Qual é a composição partidária dos parlamentares (deputados e senadores) em atividade no ano de 2024?\nNa Figura 1, foi apresentado um gráfico de barras que ilustra a distribuição dos parlamentares por partido político, permitindo visualizar quais partidos têm maior representatividade entre os parlamentares em atividade.\n2. Qual foi o montante total distribuído por cada partido por meio de emendas parlamentares individuais em 2024?\nNo gráfico de barras da Figura 2, foi feita uma visualização interativa que permite explorar o valor total das emendas por partido, possibilitando comparações diretas entre as diferentes legendas.\n3. Como se distribuiram os valores empenhados nas emendas parlamentares individuais em 2024?\nNa Figura 3 e Tabela 1, foi apresentado um histograma da distribuição dos valores e uma tabela com as principais estatísticas descritivas, permitindo compreender o padrão de distribuição dos recursos.\n4. Qual é o espectro político dos partidos com parlamentares em atividade no ano de 2024?\nNa Tabela 2, foi apresentada a classificação ideológica de cada partido político, baseada em autodeclarações das legendas, complementada pela Tabela 3 que mostra a distribuição quantitativa de parlamentares em cada espectro ideológico.\n5. Como cada espectro ideológico alocou seus recursos nas diferentes funções orçamentárias (áreas de aplicação)?\nNa Figura 4, foi apresentado um treemap que mostra a distribuição dos recursos por área de aplicação e espectro ideológico, permitindo visualizar como cada espectro aloca seus recursos nas diferentes áreas de aplicação."
+  },
+  {
+    "objectID": "relatorio.html#resultados-preliminares",
+    "href": "relatorio.html#resultados-preliminares",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "4. Resultados Preliminares",
+    "text": "4. Resultados Preliminares\nO cenário político brasileiro em 2024 apresenta uma significativa fragmentação partidária, como podemos observar na distribuição abaixo:\n\n\n\n\n\n\nFigura 1: Distribuição dos parlamentares por partido político em 2024\n\n\n\nEsta fragmentação partidária se reflete diretamente no volume de recursos distribuídos através das emendas, com algumas legendas concentrando valores expressivamente maiores:\n\n\n\n\n\n\n\n\nFigura 2: Figura 2: Distribuição total de emendas parlamentares por partido em 2024\n\n\n\n\nPara compreender melhor o padrão de distribuição dos valores individuais das emendas, analisamos suas estatísticas descritivas e distribuição:\n\n\n\n\n\n\n\n\nFigura 3: Histograma da distribuição dos valores das emendas parlamentares em 2024\n\n\n\n\n\n\n\n\n\nTabela 1: Medidas de tendência central e dispersão do valor empenhado em emendas parlamentares em 2024\n\n\n\n\n\n\n\n\nAlém da distribuição partidária, é fundamental entender o posicionamento ideológico das legendas para uma análise mais aprofundada:\n\n\n\nTabela 2: Classificação ideológica dos partidos políticos\n\n\n\n\n\n\nEsta classificação ideológica nos permite visualizar como os parlamentares se distribuem ao longo do espectro político:\n\n\n\nTabela 3: Distribuição de parlamentares por espectro ideológico\n\n\n\n\n\n\nPor fim, podemos verificar como cada espectro ideológico priorizou diferentes áreas na alocação de seus recursos em 2024:\n\n\n\n\n\n\nFigura 4: Distribuição dos recursos por área e espectro ideológico"
+  },
+  {
+    "objectID": "relatorio.html#discussão",
+    "href": "relatorio.html#discussão",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "5. Discussão",
+    "text": "5. Discussão\nEmbora uma parcela considerável dos parlamentares pertença a partidos sem autodeclaração ideológica clara (26,3%), é notável que as duas maiores bancadas - PT e PL - se posicionam nos opostos do espectro político (esquerda e direita, respectivamente). Alem disso, no que diz respeito às funções orçamentárias, é possível observar os agrupamentos de espectros ideológicos tiveram diferentes prioridades na alocação de recursos oriundos das emendas nas quais seus parlamentares foram autores."
+  },
+  {
+    "objectID": "relatorio.html#conclusão",
+    "href": "relatorio.html#conclusão",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "7. Conclusão",
+    "text": "7. Conclusão\nUm dos principais desafios deste estudo foi estabelecer uma classificação ideológica consistente dos partidos políticos. A opção por utilizar autodeclarações das legendas buscou minimizar possíveis vieses na análise.\nVale ressaltar que a ausência de informações partidárias diretamente na base de dados de emendas do Portal da Transparência dificulta que o cidadão comum faça análises agregadas por partido ou espectro ideológico, informações relevantes para o controle social.\nApesar dessas limitações, o estudo permitiu identificar padrões distintos na alocação de recursos entre diferentes grupos políticos, oferecendo insights sobre suas prioridades orçamentárias."
+  },
+  {
+    "objectID": "relatorio.html#referências",
+    "href": "relatorio.html#referências",
+    "title": "Análise Exploratória de Dados de Emendas Parlamentares em 2024",
+    "section": "8. Referências",
+    "text": "8. Referências\nBRASIL. [Emenda Constitucional nº 86, de 17 de março de 2015]. Altera os arts. 165, 166 e 198 da Constituição Federal, para tornar obrigatória a execução da programação orçamentária que especifica. Diário Oficial da União: seção 1, Brasília, DF, 18 mar. 2015. Disponível em: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc86.htm. Acesso em: 06 jan. 2025.\nBRASIL. Controladoria-Geral da União. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.portaltransparencia.gov.br. Acesso em: 06 jan. 2025.\nBRASIL. Câmara dos Deputados. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.camara.leg.br/transparencia. Acesso em: 06 jan. 2025.\nBRASIL. Senado Federal. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www25.senado.leg.br/transparencia. Acesso em: 06 jan. 2025.\nDE DIREITA ou esquerda? Veja como os partidos políticos se definem no Brasil. Valor Econômico, São Paulo, 04 out. 2024. Disponível em: https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml. Acesso em: 06 jan. 2025.\nhttps://portaldatransparencia.gov.br/origem-dos-dados"
+  }
+]
