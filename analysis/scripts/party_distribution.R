@@ -1,6 +1,5 @@
 source("analysis/config/common.R")
 
-# Criar gráfico de barras empilhadas por partido
 members |>
   group_by(partido, tipo) |>
   summarise(count = n(), .groups = "drop") |>

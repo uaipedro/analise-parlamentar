@@ -1,6 +1,5 @@
 source("analysis/config/common.R")
 
-# Create parties by ideology table
 parties_by_ideology <- members |>
   mutate(
     ideology = if_else(is.na(espectro), "não classificado", espectro),

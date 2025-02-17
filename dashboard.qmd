@@ -1,12 +1,11 @@
 ---
-title: "Dashboard - Emendas Parlamentares"
-author: "Pedro Mambelli"
+title: "Emendas Parlamentares"
 format: 
   dashboard:
     css: styles.css
 ---
 
-# Home {orientation="columns"}
+# Parlamentares e Partidos {orientation="columns"}
 
 ##
 
@@ -23,7 +22,7 @@ format:
 ![Distribuição de parlamentares por espectro ideológico](plots/ideology_table.png){#tbl-ideology-dist}
 :::
 
-# Valores {orientation="columns"}
+# Valores Empenhados {orientation="columns"}
 
 
 ::: {.card .fill }
@@ -40,16 +39,38 @@ format:
 :::
 :::
 
-# Distribuição {orientation="columns"}
+# Distribuição por Função {orientation="columns"}
+
+## {.tabset}
+
+### Comparação entre espectros
+
+![Distribuição dos recursos por área e espectro ideológico](plots/treemap_functions_by_ideology.png){#fig-treemap fig-align="center" height="700px"}
+
+### Esquerda
+![Distribuição dos recursos por área e espectro ideológico - Esquerda](plots/treemap_detailed_esquerda.png){#fig-treemap-esquerda fig-align="center" height="700px"}
+
+###  Centro-esquerda
+![Distribuição dos recursos por área e espectro ideológico - Centro-esquerda](plots/treemap_detailed_centro_esquerda.png){#fig-treemap-centro-esquerda fig-align="center" height="700px"}
+
+### Centro
+![Distribuição dos recursos por área e espectro ideológico - Centro](plots/treemap_detailed_centro.png){#fig-treemap-centro fig-align="center" height="700px"}
+
+### Centro-direita
+![Distribuição dos recursos por área e espectro ideológico - Centro-direita](plots/treemap_detailed_centro_direita.png){#fig-treemap-centro-direita fig-align="center" height="700px"}
+
+### Direita
+![Distribuição dos recursos por área e espectro ideológico - Direita](plots/treemap_detailed_direita.png){#fig-treemap-direita fig-align="center" height="700px"}
 
 
-![Distribuição dos recursos por área e espectro ideológico](plots/treemap_functions_by_ideology.png){#fig-treemap}
-
+:::
 
 # Fontes {orientation="columns"}
 
 ##
 
+###
+::: {.card title="Fontes"    }
 Os dados utilizados neste estudo foram acessados em 06/01/2025 e provêm de:
 
 1. **Portal da Transparência**
@@ -60,16 +81,26 @@ Os dados utilizados neste estudo foram acessados em 06/01/2025 e provêm de:
 
 3. **Valor Econômico (04/10/2024)**
    - Classificação ideológica dos partidos políticos baseada em autodeclarações das siglas
+:::
 
-<!-- ::: {.aside}
-Fontes:
-- [Portal da Transparência](https://portaldatransparencia.gov.br)
-- [Câmara dos Deputados](https://www.camara.leg.br/internet/deputado/deputado.xls)
-- [Senado Federal](https://www25.senado.leg.br/web/transparencia/sen/em-exercicio/-/e/por-nome)
-- [Valor Econômico](https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml)
-::: -->
+###
+::: {.card title="Referências"    }
+
+BRASIL. [Emenda Constitucional nº 86, de 17 de março de 2015]. Altera os arts. 165, 166 e 198 da Constituição Federal, para tornar obrigatória a execução da programação orçamentária que especifica. Diário Oficial da União: seção 1, Brasília, DF, 18 mar. 2015. Disponível em: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc86.htm. Acesso em: 06 jan. 2025.
+
+BRASIL. Controladoria-Geral da União. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.portaltransparencia.gov.br. Acesso em: 06 jan. 2025.
+
+BRASIL. Câmara dos Deputados. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www.camara.leg.br/transparencia. Acesso em: 06 jan. 2025.
+
+BRASIL. Senado Federal. Portal da Transparência. Brasília, DF, 2024. Disponível em: https://www25.senado.leg.br/transparencia. Acesso em: 06 jan. 2025.
+
+DE DIREITA ou esquerda? Veja como os partidos políticos se definem no Brasil. Valor Econômico, São Paulo, 04 out. 2024. Disponível em: https://valor.globo.com/politica/eleicoes-2024/noticia/2024/10/04/de-direita-ou-esquerda-veja-como-os-partidos-politicos-se-definem-no-brasil.ghtml. Acesso em: 06 jan. 2025.
+
+https://portaldatransparencia.gov.br/origem-dos-dados
+:::
 
 ## 
+::: {.card title="Dados e Variáveis"    }
 - **Tabela de Emendas:**
   - Total de 17 colunas originais, incluindo detalhes orçamentários e administrativos (ex: `Numero_Emenda`, `Plano_Orcamentario`, `Valor_Restos_Pagar_Inscritos`)
 
@@ -94,7 +125,7 @@ Fontes:
 - `Partido`: Sigla do partido ao qual o parlamentar está filiado
 - `Espectro`: Classificação ideológica do partido (Esquerda, Centro ou Direita) segundo autodeclaração
 
-
+:::
 
 
 

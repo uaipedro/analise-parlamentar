@@ -181,7 +181,7 @@ interactive_plot <- girafe(
   )
 )
 
-# Salvar versões
+# Salvar html
 htmlwidgets::saveWidget(
   interactive_plot, 
   "plots/value_by_party.html",

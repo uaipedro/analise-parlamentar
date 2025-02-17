@@ -1,6 +1,5 @@
 source("analysis/config/common.R")
 
-# Create ideology distribution table
 ideology_table <- members |>
   mutate(
     ideology = if_else(is.na(espectro), "não classificado", espectro),
@@ -12,7 +11,6 @@ ideology_table <- members |>
     cumulative_pct = round(cumsum(percentage), 1)
   )
 
-# Create ideology distribution plot
 ideology_plot <- ggplot(ideology_table, aes(x = ideology, y = count)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   geom_text(aes(label = paste0(percentage, "%")), vjust = -0.5) +
@@ -24,7 +22,7 @@ ideology_plot <- ggplot(ideology_table, aes(x = ideology, y = count)) +
 
 ggsave("plots/ideological_spectrum.png", ideology_plot, width = 10, height = 6)
 
-# Create formatted table
+
 ideology_gt_table <- ideology_table |>
   gt() |>
   cols_label(

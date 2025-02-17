@@ -1,6 +1,5 @@
 source("analysis/config/common.R")
 
-# Simplificar ideologias em 3 grupos
 amendments_by_ideology <- amendments |>
   mutate(
     espectro = case_when(
@@ -15,7 +14,6 @@ amendments_by_ideology <- amendments |>
     )
   )
 
-# Calcular as proporções por função e ideologia
 radar_data <- amendments_by_ideology |>
   filter(espectro %in% c("Esquerda", "Centro", "Direita")) |>
   group_by(espectro) |>
@@ -25,7 +23,6 @@ radar_data <- amendments_by_ideology |>
     proporcao = sum(valor_empenhado, na.rm = TRUE) / first(total_valor),
     .groups = "drop"
   ) |>
-  # Pegar as 6 principais funções (exceto saúde e encargos especiais)
   filter(!funcao %in% c("Saúde", "Encargos especiais")) |>
   group_by(funcao) |>
   mutate(total_prop = sum(proporcao)) |>
@@ -36,21 +33,18 @@ radar_data <- amendments_by_ideology |>
            desc(total_prop))$funcao, 
     5))
 
-# Criar o gráfico radar
 ggplot(radar_data, aes(x = funcao, y = proporcao, color = espectro, group = espectro)) +
-  # Adicionar linhas de grade circulares com rótulos
   geom_hline(yintercept = seq(0, max(radar_data$proporcao), by = 0.05), 
              color = "gray90", linewidth = 0.3) +
   geom_polygon(aes(fill = espectro), alpha = 0.15) +
   geom_line(linewidth = 1.2) +
-  coord_radar() +  # Adicionar clip = "off" para evitar o corte
+  coord_radar() +
   scale_y_continuous(
     labels = NULL,
     breaks = seq(0, max(radar_data$proporcao), by = 0.05),
-    limits = c(0, max(radar_data$proporcao) * 1.2),  # Aumentar o limite superior para 1.2
-    expand = expansion(mult = c(0, 0.2))  # Adicionar expansão do eixo
+    limits = c(0, max(radar_data$proporcao) * 1.2),
+    expand = expansion(mult = c(0, 0.2))
   ) +
-  # Adicionar rótulos de porcentagem diretamente no gráfico
   geom_text(data = data.frame(
     funcao = "Urbanismo",
     proporcao = seq(0, max(radar_data$proporcao), by = 0.05),
@@ -76,7 +70,7 @@ ggplot(radar_data, aes(x = funcao, y = proporcao, color = espectro, group = espe
   theme_minimal() +
   theme(
     axis.text.x = element_text(size = 10, face = "bold", angle = 0),
-    axis.text.y = element_blank(),  # Remover texto do eixo y
+    axis.text.y = element_blank(),
     legend.position = "bottom",
     legend.box.margin = margin(t = 10, b = 10),
     legend.title = element_text(face = "bold"),
